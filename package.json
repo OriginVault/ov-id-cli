@@ -1,0 +1,20 @@
+{
+  "name": "@originvault/ov-id-cli",
+  "version": "1.0.0",
+  "description": "CLI for managing decentralized identities and verifiable credentials in OriginVault.",
+  "main": "bin/ov-id.js",
+  "bin": {
+    "ov-id": "./bin/ov-id.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node bin/ov-id.js"
+  },
+  "dependencies": {
+    "@originvault/ov-id-sdk": "^0.0.1",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.0"
+  },
+  "author": "OriginVault",
+  "license": "MIT"
+} 
