@@ -31,6 +31,11 @@ ov-id sign-vc did:example:5678
 ```bash
 ov-id verify-vc <signed-vc>
 ```
+### ✅ Show Development Environment Metadata
+```bash
+ov-id show-dev-metadata
+```
+
 
 ## 🛠 Dependencies
 - [@originvault/ov-id-sdk](https://github.com/originvault/ov-id-sdk) - Decentralized Identity SDK
