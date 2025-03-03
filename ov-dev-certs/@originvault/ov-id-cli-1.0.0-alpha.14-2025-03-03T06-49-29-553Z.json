@@ -1,0 +1,139 @@
+{
+  "credentialSubject": {
+    "environment": {
+      "environment": "Node.js v23.1.0",
+      "packageJson": {
+        "name": "@originvault/ov-id-sdk",
+        "version": "0.0.1-alpha.18",
+        "organization": "originvault",
+        "description": "A TypeScript SDK for managing decentralized identities (DIDs) and verifiable credentials (VCs)",
+        "main": "./dist/src/index.js",
+        "type": "module",
+        "files": [
+          "dist/**/*"
+        ],
+        "scripts": {
+          "build": "tsc --project tsconfig.build.json",
+          "tsc": "tsc --project tsconfig.build.json",
+          "clean": "rm -rf ./dist/",
+          "cm": "cz",
+          "lint": "eslint ./src/ --fix",
+          "test:watch": "jest --watch",
+          "test": "jest --coverage",
+          "typecheck": "tsc --noEmit",
+          "prestart": "npm run tsc",
+          "start": "node dist/src/index.js",
+          "prepublish": "npm run build",
+          "publish": "npm publish"
+        },
+        "repository": {
+          "type": "git",
+          "url": "git+https://github.com/OriginVault/ov-id-sdk.git"
+        },
+        "license": "MIT",
+        "engines": {
+          "node": ">=20.0"
+        },
+        "keywords": [
+          "DID",
+          "well-known"
+        ],
+        "homepage": "https://www.originvault.io",
+        "dependencies": {
+          "@cheqd/did-provider-cheqd": "^4.4.1",
+          "@cosmjs/proto-signing": "^0.33.0",
+          "@cosmjs/tendermint-rpc": "^0.33.0",
+          "@noble/ed25519": "^2.2.3",
+          "@noble/hashes": "^1.7.1",
+          "@originvault/ov-types": "^0.0.1-alpha.9",
+          "@polkadot/api": "^15.7.1",
+          "@polkadot/keyring": "^13.4.3",
+          "@polkadot/util": "^13.4.3",
+          "@polkadot/util-crypto": "^13.4.3",
+          "@scure/bip39": "^1.5.4",
+          "@veramo/core": "^6.0.0",
+          "@veramo/core-types": "^6.0.0",
+          "@veramo/credential-w3c": "^6.0.0",
+          "@veramo/data-store": "^6.0.0",
+          "@veramo/did-resolver": "^6.0.0",
+          "@veramo/kms-local": "^6.0.0",
+          "@veramo/remote-server": "^6.0.0",
+          "@verida/did-client": "^4.4.1",
+          "bip39": "^3.1.0",
+          "cors": "^2.8.5",
+          "dotenv": "^16.4.7",
+          "express": "^4.21.2",
+          "express-rate-limit": "^7.5.0",
+          "node-fetch": "^3.3.2",
+          "tweetnacl": "^1.0.3",
+          "uuid": "^11.1.0"
+        },
+        "devDependencies": {
+          "@ryansonshine/commitizen": "^4.2.8",
+          "@ryansonshine/cz-conventional-changelog": "^3.3.4",
+          "@types/bcryptjs": "^2.4.6",
+          "@types/express": "^5.0.0",
+          "@types/jest": "^27.5.2",
+          "@types/node": "^20.10.5",
+          "@types/uuid": "^10.0.0",
+          "conventional-changelog-conventionalcommits": "^5.0.0",
+          "eslint": "^9.13.0",
+          "eslint-config-prettier": "^9.1.0",
+          "eslint-plugin-prettier": "^5.2.1",
+          "jest": "^27.2.0",
+          "lint-staged": "^13.2.1",
+          "prettier": "^3.3.3",
+          "semantic-release": "^21.0.1",
+          "ts-node": "^10.2.1",
+          "typescript": "~5.6.2",
+          "typescript-eslint": "^8.11.0"
+        },
+        "lint-staged": {
+          "*.ts": "eslint --cache --cache-location .eslintcache --fix"
+        },
+        "_id": "@originvault/ov-id-sdk@0.0.1-alpha.18"
+      },
+      "timestamp": "2025-03-03T06:49:30.620Z",
+      "commitHash": "111e3fd87f2a1bb9332fc35f2bbe02dae2cbc3b6",
+      "operatingSystem": "linux 5.15.153.1-microsoft-standard-WSL2",
+      "hostname": "9dc156e6ab4e9e2b801f1a841a38bb76025c8e83ef18a28543f5289889b2c770",
+      "ipAddress": "178a880810e4095d68505e77f35bc939ebde4d9a4c13dbc357ad3b35803bdaf1"
+    },
+    "issuer": "did:cheqd:mainnet:9720e1ef-277c-593a-85b7-c63c73531bd9",
+    "issued": "2025-03-03T06:49:30.453Z",
+    "commits": [
+      {
+        "commitHash": "111e3fd87f2a1bb9332fc35f2bbe02dae2cbc3b6",
+        "metadataHash": "123e3b2e9acd6f26fc1032536eed555e297e881067a83732f47313b99b41c48a"
+      },
+      {
+        "commitHash": "c6e4bc980588759760d93b59ed44150386d82e70",
+        "metadataHash": "52cb62be7ee337f87d341487aaa89cba6cdaa6dc09a148e8b773c553c3538875"
+      },
+      {
+        "commitHash": "0926f66b2446268b45dc89327869549c19d7f216",
+        "metadataHash": "fec479aa2b5bbe95a09d045f236ca8b23e5dc85699096162e3b796fcc44bfb50"
+      }
+    ],
+    "package": {
+      "name": "@originvault/ov-id-cli",
+      "version": "1.0.0-alpha.14",
+      "bundleHash": "6bf17caac82aea08a8f047823ac2f8b5e0898faa1d1c677b52722ff15251e14e"
+    },
+    "id": "urn:ov-release:2025-03-03T06:49:30.453Z"
+  },
+  "issuer": {
+    "id": "did:cheqd:mainnet:9720e1ef-277c-593a-85b7-c63c73531bd9"
+  },
+  "type": [
+    "VerifiableCredential"
+  ],
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "issuanceDate": "2025-03-03T06:49:30.000Z",
+  "proof": {
+    "type": "JwtProof2020",
+    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImVudmlyb25tZW50Ijp7ImVudmlyb25tZW50IjoiTm9kZS5qcyB2MjMuMS4wIiwicGFja2FnZUpzb24iOnsibmFtZSI6IkBvcmlnaW52YXVsdC9vdi1pZC1zZGsiLCJ2ZXJzaW9uIjoiMC4wLjEtYWxwaGEuMTgiLCJvcmdhbml6YXRpb24iOiJvcmlnaW52YXVsdCIsImRlc2NyaXB0aW9uIjoiQSBUeXBlU2NyaXB0IFNESyBmb3IgbWFuYWdpbmcgZGVjZW50cmFsaXplZCBpZGVudGl0aWVzIChESURzKSBhbmQgdmVyaWZpYWJsZSBjcmVkZW50aWFscyAoVkNzKSIsIm1haW4iOiIuL2Rpc3Qvc3JjL2luZGV4LmpzIiwidHlwZSI6Im1vZHVsZSIsImZpbGVzIjpbImRpc3QvKiovKiJdLCJzY3JpcHRzIjp7ImJ1aWxkIjoidHNjIC0tcHJvamVjdCB0c2NvbmZpZy5idWlsZC5qc29uIiwidHNjIjoidHNjIC0tcHJvamVjdCB0c2NvbmZpZy5idWlsZC5qc29uIiwiY2xlYW4iOiJybSAtcmYgLi9kaXN0LyIsImNtIjoiY3oiLCJsaW50IjoiZXNsaW50IC4vc3JjLyAtLWZpeCIsInRlc3Q6d2F0Y2giOiJqZXN0IC0td2F0Y2giLCJ0ZXN0IjoiamVzdCAtLWNvdmVyYWdlIiwidHlwZWNoZWNrIjoidHNjIC0tbm9FbWl0IiwicHJlc3RhcnQiOiJucG0gcnVuIHRzYyIsInN0YXJ0Ijoibm9kZSBkaXN0L3NyYy9pbmRleC5qcyIsInByZXB1Ymxpc2giOiJucG0gcnVuIGJ1aWxkIiwicHVibGlzaCI6Im5wbSBwdWJsaXNoIn0sInJlcG9zaXRvcnkiOnsidHlwZSI6ImdpdCIsInVybCI6ImdpdCtodHRwczovL2dpdGh1Yi5jb20vT3JpZ2luVmF1bHQvb3YtaWQtc2RrLmdpdCJ9LCJsaWNlbnNlIjoiTUlUIiwiZW5naW5lcyI6eyJub2RlIjoiPj0yMC4wIn0sImtleXdvcmRzIjpbIkRJRCIsIndlbGwta25vd24iXSwiaG9tZXBhZ2UiOiJodHRwczovL3d3dy5vcmlnaW52YXVsdC5pbyIsImRlcGVuZGVuY2llcyI6eyJAY2hlcWQvZGlkLXByb3ZpZGVyLWNoZXFkIjoiXjQuNC4xIiwiQGNvc21qcy9wcm90by1zaWduaW5nIjoiXjAuMzMuMCIsIkBjb3NtanMvdGVuZGVybWludC1ycGMiOiJeMC4zMy4wIiwiQG5vYmxlL2VkMjU1MTkiOiJeMi4yLjMiLCJAbm9ibGUvaGFzaGVzIjoiXjEuNy4xIiwiQG9yaWdpbnZhdWx0L292LXR5cGVzIjoiXjAuMC4xLWFscGhhLjkiLCJAcG9sa2Fkb3QvYXBpIjoiXjE1LjcuMSIsIkBwb2xrYWRvdC9rZXlyaW5nIjoiXjEzLjQuMyIsIkBwb2xrYWRvdC91dGlsIjoiXjEzLjQuMyIsIkBwb2xrYWRvdC91dGlsLWNyeXB0byI6Il4xMy40LjMiLCJAc2N1cmUvYmlwMzkiOiJeMS41LjQiLCJAdmVyYW1vL2NvcmUiOiJeNi4wLjAiLCJAdmVyYW1vL2NvcmUtdHlwZXMiOiJeNi4wLjAiLCJAdmVyYW1vL2NyZWRlbnRpYWwtdzNjIjoiXjYuMC4wIiwiQHZlcmFtby9kYXRhLXN0b3JlIjoiXjYuMC4wIiwiQHZlcmFtby9kaWQtcmVzb2x2ZXIiOiJeNi4wLjAiLCJAdmVyYW1vL2ttcy1sb2NhbCI6Il42LjAuMCIsIkB2ZXJhbW8vcmVtb3RlLXNlcnZlciI6Il42LjAuMCIsIkB2ZXJpZGEvZGlkLWNsaWVudCI6Il40LjQuMSIsImJpcDM5IjoiXjMuMS4wIiwiY29ycyI6Il4yLjguNSIsImRvdGVudiI6Il4xNi40LjciLCJleHByZXNzIjoiXjQuMjEuMiIsImV4cHJlc3MtcmF0ZS1saW1pdCI6Il43LjUuMCIsIm5vZGUtZmV0Y2giOiJeMy4zLjIiLCJ0d2VldG5hY2wiOiJeMS4wLjMiLCJ1dWlkIjoiXjExLjEuMCJ9LCJkZXZEZXBlbmRlbmNpZXMiOnsiQHJ5YW5zb25zaGluZS9jb21taXRpemVuIjoiXjQuMi44IiwiQHJ5YW5zb25zaGluZS9jei1jb252ZW50aW9uYWwtY2hhbmdlbG9nIjoiXjMuMy40IiwiQHR5cGVzL2JjcnlwdGpzIjoiXjIuNC42IiwiQHR5cGVzL2V4cHJlc3MiOiJeNS4wLjAiLCJAdHlwZXMvamVzdCI6Il4yNy41LjIiLCJAdHlwZXMvbm9kZSI6Il4yMC4xMC41IiwiQHR5cGVzL3V1aWQiOiJeMTAuMC4wIiwiY29udmVudGlvbmFsLWNoYW5nZWxvZy1jb252ZW50aW9uYWxjb21taXRzIjoiXjUuMC4wIiwiZXNsaW50IjoiXjkuMTMuMCIsImVzbGludC1jb25maWctcHJldHRpZXIiOiJeOS4xLjAiLCJlc2xpbnQtcGx1Z2luLXByZXR0aWVyIjoiXjUuMi4xIiwiamVzdCI6Il4yNy4yLjAiLCJsaW50LXN0YWdlZCI6Il4xMy4yLjEiLCJwcmV0dGllciI6Il4zLjMuMyIsInNlbWFudGljLXJlbGVhc2UiOiJeMjEuMC4xIiwidHMtbm9kZSI6Il4xMC4yLjEiLCJ0eXBlc2NyaXB0IjoifjUuNi4yIiwidHlwZXNjcmlwdC1lc2xpbnQiOiJeOC4xMS4wIn0sImxpbnQtc3RhZ2VkIjp7IioudHMiOiJlc2xpbnQgLS1jYWNoZSAtLWNhY2hlLWxvY2F0aW9uIC5lc2xpbnRjYWNoZSAtLWZpeCJ9LCJfaWQiOiJAb3JpZ2ludmF1bHQvb3YtaWQtc2RrQDAuMC4xLWFscGhhLjE4In0sInRpbWVzdGFtcCI6IjIwMjUtMDMtMDNUMDY6NDk6MzAuNjIwWiIsImNvbW1pdEhhc2giOiIxMTFlM2ZkODdmMmExYmI5MzMyZmMzNWYyYmJlMDJkYWUyY2JjM2I2Iiwib3BlcmF0aW5nU3lzdGVtIjoibGludXggNS4xNS4xNTMuMS1taWNyb3NvZnQtc3RhbmRhcmQtV1NMMiIsImhvc3RuYW1lIjoiOWRjMTU2ZTZhYjRlOWUyYjgwMWYxYTg0MWEzOGJiNzYwMjVjOGU4M2VmMThhMjg1NDNmNTI4OTg4OWIyYzc3MCIsImlwQWRkcmVzcyI6IjE3OGE4ODA4MTBlNDA5NWQ2ODUwNWU3N2YzNWJjOTM5ZWJkZTRkOWE0YzEzZGJjMzU3YWQzYjM1ODAzYmRhZjEifSwiaXNzdWVyIjoiZGlkOmNoZXFkOm1haW5uZXQ6OTcyMGUxZWYtMjc3Yy01OTNhLTg1YjctYzYzYzczNTMxYmQ5IiwiaXNzdWVkIjoiMjAyNS0wMy0wM1QwNjo0OTozMC40NTNaIiwiY29tbWl0cyI6W3siY29tbWl0SGFzaCI6IjExMWUzZmQ4N2YyYTFiYjkzMzJmYzM1ZjJiYmUwMmRhZTJjYmMzYjYiLCJtZXRhZGF0YUhhc2giOiIxMjNlM2IyZTlhY2Q2ZjI2ZmMxMDMyNTM2ZWVkNTU1ZTI5N2U4ODEwNjdhODM3MzJmNDczMTNiOTliNDFjNDhhIn0seyJjb21taXRIYXNoIjoiYzZlNGJjOTgwNTg4NzU5NzYwZDkzYjU5ZWQ0NDE1MDM4NmQ4MmU3MCIsIm1ldGFkYXRhSGFzaCI6IjUyY2I2MmJlN2VlMzM3Zjg3ZDM0MTQ4N2FhYTg5Y2JhNmNkYWE2ZGMwOWExNDhlOGI3NzNjNTUzYzM1Mzg4NzUifSx7ImNvbW1pdEhhc2giOiIwOTI2ZjY2YjI0NDYyNjhiNDVkYzg5MzI3ODY5NTQ5YzE5ZDdmMjE2IiwibWV0YWRhdGFIYXNoIjoiZmVjNDc5YWEyYjViYmU5NWEwOWQwNDVmMjM2Y2E4YjIzZTVkYzg1Njk5MDk2MTYyZTNiNzk2ZmNjNDRiZmI1MCJ9XSwicGFja2FnZSI6eyJuYW1lIjoiQG9yaWdpbnZhdWx0L292LWlkLWNsaSIsInZlcnNpb24iOiIxLjAuMC1hbHBoYS4xNCIsImJ1bmRsZUhhc2giOiI2YmYxN2NhYWM4MmFlYTA4YThmMDQ3ODIzYWMyZjhiNWUwODk4ZmFhMWQxYzY3N2I1MjcyMmZmMTUyNTFlMTRlIn19fSwic3ViIjoidXJuOm92LXJlbGVhc2U6MjAyNS0wMy0wM1QwNjo0OTozMC40NTNaIiwibmJmIjoxNzQwOTg0NTcwLCJpc3MiOiJkaWQ6Y2hlcWQ6bWFpbm5ldDo5NzIwZTFlZi0yNzdjLTU5M2EtODViNy1jNjNjNzM1MzFiZDkifQ.mPgzute9j-o4BY-xCpvckk1pNMMvybqnFbrpuROBAMt_LGnh63ljI741kWCjCLaj7aBVJccLOe1KGrCpF8X5CA"
+  }
+}

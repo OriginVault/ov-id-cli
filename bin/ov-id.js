@@ -19,7 +19,9 @@ import {
   encryptDataForDID,
   signVC, 
   verifyVC,
-  getDevelopmentEnvironmentMetadata
+  getDevelopmentEnvironmentMetadata,
+  signLatestCommit,
+  signCurrentRelease
 } from '@originvault/ov-id-sdk';
 
 program
@@ -242,13 +244,31 @@ program
     }
   });
 
-  // Show Dev Environment Metdata
-  program
-    .command("show-dev-metadata")
-    .description("Display the development environment metadata")
-    .action(async () => {
-      const metadata = await getDevelopmentEnvironmentMetadata();
-      console.log(chalk.green("✅ Dev Environment Metadata:"), metadata);
-    });
+// Show Dev Environment Metdata
+program
+  .command("show-dev-metadata")
+  .description("Display the development environment metadata")
+  .action(async () => {
+    const metadata = await getDevelopmentEnvironmentMetadata();
+    console.log(chalk.green("✅ Dev Environment Metadata:"), metadata);
+  });
+
+// Sign the latest commit
+program
+  .command("sign-latest-commit")
+  .description("Sign the latest commit")
+  .action(async () => {
+    const signedCommit = await signLatestCommit();
+    console.log(chalk.green("✅ Signed Commit:"), signedCommit);
+  });
+
+// Sign the current release
+program
+  .command("sign-current-release")
+  .description("Sign the current release")
+  .action(async () => { 
+    const signedRelease = await signCurrentRelease();
+    console.log(chalk.green("✅ Signed Release:"), signedRelease);
+  });
 
 program.parse(process.argv); 
