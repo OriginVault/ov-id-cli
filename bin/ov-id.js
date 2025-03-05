@@ -23,7 +23,10 @@ import {
   signLatestCommit,
   signCurrentRelease,
   importDID,
-  getDID
+  getDID,
+  getCosmosPayerSeed,
+  storeCosmosPayerSeed,
+  initializeAgent,
 } from '@originvault/ov-id-sdk';
 
 program
@@ -33,7 +36,7 @@ program
 // Add password management
 let storedPassword = null;
 let storedPrimaryDID = null;  // Add this to store the DID in memory
-
+let payerSeed = null;
 async function ensurePassword() {
   if (!storedPassword) {
     const { password } = await inquirer.prompt([
@@ -53,6 +56,81 @@ async function ensurePassword() {
     storedPassword = password;
   }
   return storedPassword;
+}
+
+async function promptForSeed() {
+//       // First prompt for the type of input
+//       const { inputType } = await inquirer.prompt([
+//         {
+//           type: 'list',
+//           name: 'inputType',
+//           message: 'What type of authentication are you using?',
+//           choices: [
+//             { name: 'Recovery Phrase (12 or 24 words)', value: 'recovery' },
+//             { name: 'Private Key (base64 format)', value: 'private' }
+//           ]
+//         }
+//       ]);
+
+      const { secret } = await inquirer.prompt([
+        {
+          type: 'password',
+          name: 'secret',
+          message: 'Enter your recovery phrase (space-separated words):',
+          mask: '*',
+          validate: (input) => {
+            // if (inputType === 'recovery') {
+              const wordCount = input.trim().split(/\s+/).length;
+              if (wordCount !== 12 && wordCount !== 24) {
+                return 'Recovery phrase must be 12 or 24 words';
+              }
+            // } else {
+            //   // Check if it's base64 format
+            //   const isBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(input);
+              
+            //   if (!isBase64) {
+            //     return 'Private key must be in base64 format';
+            //   }
+            // }
+            return true;
+          }
+        }
+      ]);
+
+      let recoveryPhrase = secret;
+
+      // if (inputType === 'private') {
+      //   // Convert recovery phrase to private key
+      //   recoveryPhrase = await convertPrivateKeyToRecovery(secret);
+      // }
+      
+      return recoveryPhrase;
+}
+
+async function ensurePayerSeed() {
+  // Prompt the user to choose between using the primary payer seed or inputting a new seed
+  const { seedChoice } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'seedChoice',
+      message: 'Do you want to use the primary payer seed or input a new seed?',
+      choices: [
+        { name: 'Use primary payer seed', value: 'primary' },
+        { name: 'Input new seed', value: 'input' }
+      ]
+    }
+  ]);
+
+  if (seedChoice === 'primary') {
+    payerSeed = await getCosmosPayerSeed();
+  }
+
+  if (!payerSeed || seedChoice === 'input') {
+    payerSeed = await promptForSeed();
+  }
+
+  await initializeAgent({ payerSeed: payerSeed });
+  return payerSeed;
 }
 
 // Update the password check middleware to include 2FA
@@ -90,6 +168,11 @@ program
       console.log(chalk.red("❌ Invalid method. Use 'cheqd:mainnet', 'cheqd:testnet' or 'key'."));
       return;
     }
+
+    if(method === "cheqd:mainnet"){
+      
+      await ensurePayerSeed();
+    }
     try {
       const { did, mnemonic } = await createDID({ method });
       console.log(chalk.green("✅ New DID Created:"), did);
@@ -98,7 +181,13 @@ program
       console.log(chalk.red("❌ Error creating DID:"), error.message);
     }
   });
-  
+
+program
+  .command("set-cosmos-payer-seed")
+  .description("✨Set the Cosmos payer seed")
+  .action(async () => {
+    await ensurePayerSeed();
+  });
   
 // Import a DID
 program
