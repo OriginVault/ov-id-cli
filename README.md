@@ -1,4 +1,4 @@
-# 🚀 `ov-id-cli` - OriginVault Identity CLI (in alpha)
+# 🚀 `ov-id-cli` - OriginVault Identity CLI (_in alpha_)
 A command-line interface (CLI) for managing **decentralized identities (DIDs)** and **verifiable credentials (VCs)** using `@originvault/ov-id-sdk`.
 
 ## 📦 Installation
