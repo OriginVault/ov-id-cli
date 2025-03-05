@@ -21,7 +21,9 @@ import {
   verifyVC,
   getDevelopmentEnvironmentMetadata,
   signLatestCommit,
-  signCurrentRelease
+  signCurrentRelease,
+  importDID,
+  getDID
 } from '@originvault/ov-id-sdk';
 
 program
@@ -38,7 +40,7 @@ async function ensurePassword() {
       {
         type: 'password',
         name: 'password',
-        message: 'Enter your password:',
+        message: ' Enter your password:',
         mask: '*',
         validate: (input) => {
           if (!input || input.length < 1) {
@@ -81,19 +83,89 @@ program.hook('preAction', async (action) => {
 
 // Create a DID
 program
-  .command("create-did <method>")
-  .description("Generate a new DID (methods: 'cheqd' or 'key')")
+    .command("create-did [method]")
+  .description("Generate a new DID (methods: 'cheqd:mainnet', 'cheqd:testnet' or 'key')")
   .action(async (method) => {
-    if (!["cheqd", "key"].includes(method)) {
-      console.log(chalk.red("❌ Invalid method. Use 'cheqd' or 'key'."));
+    if (!["cheqd:mainnet", "cheqd:testnet", "key", ""].includes(method)) {
+      console.log(chalk.red("❌ Invalid method. Use 'cheqd:mainnet', 'cheqd:testnet' or 'key'."));
       return;
     }
     try {
-      const { did, mnemonic } = await createDID(method, storedPassword);
+      const { did, mnemonic } = await createDID({ method });
       console.log(chalk.green("✅ New DID Created:"), did);
       console.log(chalk.blue("🔑 Mnemonic (keep this safe!):"), mnemonic);
     } catch (error) {
       console.log(chalk.red("❌ Error creating DID:"), error.message);
+    }
+  });
+  
+  
+// Import a DID
+program
+  .command("import-did <did>")
+  .description("Import an existing DID")
+  .action(async (did) => {
+    try {
+      const method = did.split(':')[1];
+      
+      // First prompt for the type of input
+      const { inputType } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'inputType',
+          message: 'What type of authentication are you using?',
+          choices: [
+            { name: 'Recovery Phrase (12 or 24 words)', value: 'recovery' },
+            { name: 'Private Key (base64 format)', value: 'private' }
+          ]
+        }
+      ]);
+
+      // Then prompt for the actual value
+      const { secret } = await inquirer.prompt([
+        {
+          type: 'password',
+          name: 'secret',
+          message: inputType === 'recovery' 
+            ? 'Enter your recovery phrase (space-separated words):' 
+            : 'Enter your private key (base64 format):',
+          mask: '*',
+          validate: (input) => {
+            if (inputType === 'recovery') {
+              const wordCount = input.trim().split(/\s+/).length;
+              if (wordCount !== 12 && wordCount !== 24) {
+                return 'Recovery phrase must be 12 or 24 words';
+              }
+            } else {
+              // Check if it's base64 format
+              const isBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(input);
+              
+              if (!isBase64) {
+                return 'Private key must be in base64 format';
+              }
+            }
+            return true;
+          }
+        }
+      ]);
+
+      let privateKey = secret;
+
+      if (inputType === 'recovery') {
+        // Convert recovery phrase to private key
+        privateKey = await convertRecoveryToPrivateKey(secret);
+      }
+
+      await ensurePassword(); // Ensure the user has entered their password
+      const confirmed = await importDID(did, privateKey, method); // Assuming null for privateKey as it's an import
+      if (confirmed) {
+        storedPrimaryDID = did;  // Update the stored DID
+        console.log(chalk.green(`✅ DID Imported: ${did}`));
+      } else {
+        console.log(chalk.red("❌ Failed to import DID"));
+      }
+    } catch (error) {
+      console.log(chalk.red("❌ Error importing DID:"), error.message);
     }
   });
 
@@ -179,6 +251,19 @@ program
       }
     } catch (error) {
       console.log(chalk.red("❌ Error retrieving primary DID:"), error.message);
+    }
+  });
+
+// Get DID
+program
+  .command("get-did <didString>")
+  .description("Get the DID for the primary signing DID")
+  .action(async (didString) => {
+    const did = await getDID(didString);
+    if (!did) {
+      console.log(chalk.red("❌ No DID found"));
+    } else {
+      console.log(chalk.green("✅ DID:"), did);
     }
   });
 
