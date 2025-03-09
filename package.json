@@ -1,6 +1,7 @@
 {
   "name": "@originvault/ov-id-cli",
-  "version": "1.0.0-alpha.38",
+  "did": "did:cheqd:mainnet:39595b5d-c8b7-5412-a053-7de95c190f90",
+  "version": "1.0.0-alpha.66",
   "description": "CLI for managing decentralized identities and verifiable credentials in OriginVault.",
   "main": "bin/ov-id.js",
   "bin": {
@@ -12,17 +13,30 @@
     "url": "git+https://github.com/OriginVault/ov-id-cli.git"
   },
   "scripts": {
+    "build": "npm run clean && tsc --project tsconfig.build.json",
+    "tsc": "tsc --project tsconfig.build.json",
+    "clean": "rm -rf ./dist/",
     "start": "node --no-deprecation bin/ov-id.js",
-    "preinstall": "npm cache clean --force"
+    "preinstall": "npm cache clean --force",
+    "pre-publish": "npm run build && npm run sign-release",
+    "sign-release": "node sign-release.js"
   },
   "dependencies": {
     "@noble/ed25519": "^2.2.3",
     "@noble/hashes": "^1.7.1",
-    "@originvault/ov-id-sdk": "^0.0.1-alpha.45",
+    "@originvault/ov-id-sdk": "^0.0.1-alpha.70",
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security",
     "inquirer": "^12.4.2",
-    "readline-sync": "^1.4.10"
+    "ora": "^8.2.0",
+    "readline-sync": "^1.4.10",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.11.0"
   },
   "author": "OriginVault",
   "license": "MIT"

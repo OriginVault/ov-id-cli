@@ -20,13 +20,15 @@ import {
   signVC, 
   verifyVC,
   getDevelopmentEnvironmentMetadata,
-  signLatestCommit,
-  signCurrentRelease,
-  importDID,
-  getDID,
   getCosmosPayerSeed,
-  storeCosmosPayerSeed,
+  setCosmosPayerSeed,
+  listAllKeys,
   initializeAgent,
+  packageStore,
+  userStore,
+  userAgent,
+  parentStore,
+  createResource,
 } from '@originvault/ov-id-sdk';
 
 program
@@ -137,7 +139,7 @@ async function ensurePayerSeed() {
 program.hook('preAction', async (action) => {
   // Skip checks for these commands
   const commandName = action.args[0]
-  const skipAuthCommands = ['help','set-primary', 'show-primary', 'show-recovery', 'encrypt-data'];
+  const skipAuthCommands = ['help','set-primary', 'show-primary'];
 
   if (skipAuthCommands.includes(commandName)) return;
   
@@ -150,6 +152,7 @@ program.hook('preAction', async (action) => {
       storedPrimaryDID = await verifyPrimaryDID(storedPassword);
       if(!storedPrimaryDID){
         console.log(chalk.red("Primary DID not found. A primary DID is needed to use this command."));
+        process.exit(1);
       }
     }
 
@@ -158,6 +161,22 @@ program.hook('preAction', async (action) => {
     process.exit(1);
   }
 });
+
+program.command("get-store-info [store]")
+  .description("Get the store info")
+  .action(async (store) => {
+    if(store === "package"){
+      const packageStoreInfo = await packageStore.initialize();
+      console.log(chalk.green("✅ Package Store Info:"), packageStoreInfo);
+    } else if(store === "user"){
+      console.log(chalk.green("✅ User Store Info:"), userStore );
+    } else if(store === "parent"){
+      const parentStoreInfo = await parentStore.initialize();
+      console.log(chalk.green("✅ Parent Store Info:"), parentStoreInfo);
+    } else {
+      console.log(chalk.red("❌ Invalid store. Use 'package', 'user' or 'parent'."));
+    }
+  });
 
 // Create a DID
 program
@@ -168,13 +187,12 @@ program
       console.log(chalk.red("❌ Invalid method. Use 'cheqd:mainnet', 'cheqd:testnet' or 'key'."));
       return;
     }
-
     if(method === "cheqd:mainnet"){
       
       await ensurePayerSeed();
     }
     try {
-      const { did, mnemonic } = await createDID({ method });
+      const { did, mnemonic } = await createDID({ method, agent: userAgent });
       console.log(chalk.green("✅ New DID Created:"), did);
       console.log(chalk.blue("🔑 Mnemonic (keep this safe!):"), mnemonic);
     } catch (error) {
@@ -183,10 +201,13 @@ program
   });
 
 program
-  .command("set-cosmos-payer-seed")
+  .command("set-cosmos-payer-seed [seed]")
   .description("✨Set the Cosmos payer seed")
-  .action(async () => {
-    await ensurePayerSeed();
+  .action(async (seed) => {
+    if(!seed){
+      seed = await ensurePayerSeed();
+      await setCosmosPayerSeed(seed);
+    }
   });
   
 // Import a DID
@@ -196,7 +217,19 @@ program
   .action(async (did) => {
     try {
       const method = did.split(':')[1];
-      
+      const storeMap = [
+        { name: 'packageStore', value: 'packageStore' },
+        { name: 'userStore', value: 'userStore' },
+      ];
+
+      const { selectedStore } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedStore',
+          message: 'Select a store to import the DID:',
+          choices: storeMap,
+        }
+      ]);
       // First prompt for the type of input
       const { inputType } = await inquirer.prompt([
         {
@@ -246,7 +279,8 @@ program
       }
 
       await ensurePassword(); // Ensure the user has entered their password
-      const confirmed = await importDID(did, privateKey, method); // Assuming null for privateKey as it's an import
+      const store = selectedStore === 'packageStore' ? packageStore : userStore;
+      const confirmed = await store.importDID(did, privateKey, method);
       if (confirmed) {
         storedPrimaryDID = did;  // Update the stored DID
         console.log(chalk.green(`✅ DID Imported: ${did}`));
@@ -348,12 +382,78 @@ program
   .command("get-did <didString>")
   .description("Get the DID for the primary signing DID")
   .action(async (didString) => {
-    const did = await getDID(didString);
+    const did = await userStore.getDID(didString);
     if (!did) {
-      console.log(chalk.red("❌ No DID found"));
+      did = await packageStore.getDID(didString);
+      if (!did) {
+        console.log(chalk.red("❌ No DID found"));
+      } else {
+        console.log(chalk.green("✅ DID:"), did);
+      }
     } else {
       console.log(chalk.green("✅ DID:"), did);
     }
+  });
+
+// List all DIDs
+program
+  .command("list-dids [provider]")
+  .description("List all DIDs")
+  .action(async (provider) => {
+    let dids;
+    const storeMap = [
+        { name: 'packageStore', value: 'packageStore' },
+        { name: 'userStore', value: 'userStore' },
+      ];
+
+      const { selectedStore } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedStore',
+          message: 'Select a store to view more information:',
+          choices: storeMap,
+        }
+      ]);
+
+      if (selectedStore === 'packageStore') {
+        dids = await packageStore.listDIDs();
+      } else {
+        dids = await userStore.listDIDs();
+      }
+
+      if (dids.length === 0) {
+      console.log(chalk.yellow("⚠️ No DIDs found"));
+    } else {
+      const didsMap = dids.map(didObj => didObj.did);
+
+      const { selectedDid } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'selectedDid',
+          message: 'Select a DID to view more information:',
+          choices: didsMap,
+        }
+      ]);
+
+      // Find the selected DID object to display more information
+      const selectedDidObj = dids.find(didObj => didObj.did === selectedDid);
+
+      // Show more information about the selected DID
+      console.log(chalk.green("✅ Selected DID:"), selectedDid);
+      console.log(chalk.blue("Provider:"), selectedDidObj.provider);
+      console.log(chalk.blue("Controller Key ID:"), selectedDidObj.controllerKeyId);
+      console.log(chalk.blue("Keys:"), JSON.stringify(selectedDidObj.keys, null, 2)); // Stringify keys
+      console.log(chalk.blue("Services:"), JSON.stringify(selectedDidObj.services, null, 2)); // Stringify services
+    }
+  }); 
+
+// List all Keys
+program
+  .command("list-all-keys")
+  .description("List all keys on the keyring")
+  .action(async () => {
+    const keys = await listAllKeys();
+    console.log(chalk.green("✅ Keys:"), keys);
   });
 
 // Sign a Verifiable Credential
@@ -384,18 +484,26 @@ program
 
 // New command to show recovery phrase
 program
-  .command("show-recovery")
+  .command("show-recovery [did]")
   .description("Display the recovery phrase for the primary DID")
-  .action(async () => {
+  .action(async (did) => {
     try {
       await ensurePassword(); // Ensure the user has entered their password
+      if(!did){
+        // Retrieve the primary DID's private key (this assumes you have a way to get it)
+        const privateKey = await getPrivateKeyForPrimaryDID(storedPassword); // Placeholder function
 
-      // Retrieve the primary DID's private key (this assumes you have a way to get it)
-      const privateKey = await getPrivateKeyForPrimaryDID(storedPassword); // Placeholder function
-
-      // Convert the private key to a recovery phrase
-      const recoveryPhrase = await convertPrivateKeyToRecovery(privateKey);
-      console.log(chalk.green("✅ Recovery Phrase:"), recoveryPhrase);
+        // Convert the private key to a recovery phrase
+        const recoveryPhrase = await convertPrivateKeyToRecovery(privateKey);
+        console.log(chalk.green("✅ Recovery Phrase:"), recoveryPhrase);
+      } else {
+        const didObj = await userStore.getDID(did);
+        if(!didObj){
+          didObj = await packageStore.getDID(did);
+        }
+        const recoveryPhrase = await convertPrivateKeyToRecovery(didObj.privateKey);
+        console.log(chalk.green("✅ Recovery Phrase:"), recoveryPhrase);
+      }
     } catch (error) {
       console.log(chalk.red("❌ Error retrieving recovery phrase:"), error.message);
     }
@@ -427,22 +535,12 @@ program
     console.log(chalk.green("✅ Dev Environment Metadata:"), metadata);
   });
 
-// Sign the latest commit
-program
-  .command("sign-latest-commit")
-  .description("Sign the latest commit")
-  .action(async () => {
-    const signedCommit = await signLatestCommit();
-    console.log(chalk.green("✅ Signed Commit:"), signedCommit);
-  });
-
-// Sign the current release
-program
-  .command("sign-current-release")
-  .description("Sign the current release")
-  .action(async () => { 
-    const signedRelease = await signCurrentRelease();
-    console.log(chalk.green("✅ Signed Release:"), signedRelease);
-  });
+// program.command("create-resource")
+//   .description("Create a new resource")
+//   .action(async () => {
+//     const resource = await createResource({ didObject: packageDID, name: '', directory: '../ov-dev-certs', provider: packageStore.cheqdMainnetProvider, agent: packageStore.agent, keyStore: packageStore.privateKeyStore });
+    
+//     console.log(chalk.green("✅ Resource Created:"), resource);
+//   });
 
 program.parse(process.argv); 
