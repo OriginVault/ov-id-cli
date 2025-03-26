@@ -25,9 +25,8 @@ import {
   verifyVC,
   getEnvironmentMetadata,
   getCosmosPayerSeed,
-  setCosmosPayerSeed,
+  storeCosmosPayerSeed,
   listAllKeys,
-  initializeAgent,
   packageStore,
   userStore,
   userAgent,
@@ -134,7 +133,7 @@ async function ensurePayerSeed() {
     payerSeed = await promptForSeed();
   }
 
-  await initializeAgent({ payerSeed: payerSeed });
+  await parentStore.initialize({ payerSeed: payerSeed });
   return payerSeed;
 }
 
@@ -205,11 +204,11 @@ program
 
 program
   .command("set-cosmos-payer-seed [seed]")
-  .description("✨Set the Cosmos payer seed")
+  .description("✨ Set the Cosmos payer seed")
   .action(async (seed) => {
     if(!seed){
       seed = await ensurePayerSeed();
-      await setCosmosPayerSeed(seed);
+      await storeCosmosPayerSeed(seed);
     }
   });
   
