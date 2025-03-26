@@ -1,7 +1,7 @@
 {
   "name": "@originvault/ov-id-cli",
   "did": "did:cheqd:mainnet:39595b5d-c8b7-5412-a053-7de95c190f90",
-  "version": "1.0.0-alpha.66",
+  "version": "1.0.0-alpha.68",
   "description": "CLI for managing decentralized identities and verifiable credentials in OriginVault.",
   "main": "bin/ov-id.js",
   "bin": {
@@ -16,7 +16,7 @@
     "build": "npm run clean && tsc --project tsconfig.build.json",
     "tsc": "tsc --project tsconfig.build.json",
     "clean": "rm -rf ./dist/",
-    "start": "node --no-deprecation bin/ov-id.js",
+    "start": "npx tsx --no-deprecation bin/ov-id.js",
     "preinstall": "npm cache clean --force",
     "pre-publish": "npm run build && npm run sign-release",
     "sign-release": "node sign-release.js"
@@ -24,7 +24,7 @@
   "dependencies": {
     "@noble/ed25519": "^2.2.3",
     "@noble/hashes": "^1.7.1",
-    "@originvault/ov-id-sdk": "^0.0.1-alpha.70",
+    "@originvault/ov-id-sdk": "0.0.14",
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "dotenv": "^16.4.7",
@@ -35,6 +35,8 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@originvault/ov-types": "0.0.8",
+    "tsx": "^4.19.3",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0"
   },
