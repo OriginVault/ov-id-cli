@@ -350,6 +350,9 @@ program
 
       await ensurePassword();
 
+      if(!userAgent){
+        await userStore.initialize({ payerSeed: payerSeed });
+      }
       const confirmed = await setPrimaryDID(did, privateKey, storedPassword);
       if (confirmed) {
         storedPrimaryDID = did;  // Update the stored DID

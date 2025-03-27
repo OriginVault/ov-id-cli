@@ -1,7 +1,7 @@
 {
   "name": "@originvault/ov-id-cli",
   "did": "did:cheqd:mainnet:39595b5d-c8b7-5412-a053-7de95c190f90",
-  "version": "1.0.0-alpha.77",
+  "version": "1.0.1",
   "description": "CLI for managing decentralized identities and verifiable credentials in OriginVault.",
   "main": "bin/ov-id.js",
   "bin": {
@@ -24,7 +24,7 @@
   "dependencies": {
     "@noble/ed25519": "^2.2.3",
     "@noble/hashes": "^1.7.1",
-    "@originvault/ov-id-sdk": "0.0.16",
+    "@originvault/ov-id-sdk": "0.0.17-alpha.3",
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "dotenv": "^16.4.7",
